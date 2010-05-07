@@ -40,15 +40,11 @@ def shutdown():
 	# in your program, its worth knowing.
 	
 	import os
+	import shutil
 	
-	if os.path.isdir(os.path.join(os.getcwd(),'build/default/src')):
-		# copy the resources folder to the build folder.
-		import shutil
-		print 'Copying resouces to build folder...'
-		
-	if os.path.isdir('build/default/'):
+	if os.path.isdir(os.path.join(os.getcwd(),'build/default')):
 		try:
-			shutil.copy2('automate.glade','build/default/automate.glade')
+			shutil.copy2('automate.glade','./build/default/automate.glade')
 			print 'Copying new resouces...'
 		except:
 			print 'Copying failed. Acces denied?'

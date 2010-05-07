@@ -6,30 +6,11 @@
 
 #include <gtkmm.h>
 
-//#include <gtkmm/main.h>
-/*
-#include <gtkmm/drawingarea.h>
-#include <gtkmm/button.h>
-#include <gtkmm/window.h>
-#include <gtkmm/box.h>
-#include <gtkmm/viewport.h>
-*/
-
 //#define DEBUG_AUTOMATIONWIDGET
 
 
 int main(int argc,char *argv[])
 {
-
-	
-	std::vector <int> points;
-	
-	// midi.setup() calls into midiIn.hpp & creates an input port.
-	//midi::setup();
-	// midi sends a signal each time new data arrives. Its bound below.
-	
-	// Setup JACK client (for transport)
-	//jack_client_t client = &createJackClient();
 	
 	Gtk::Main kit(argc, argv);
 	
@@ -58,9 +39,9 @@ int main(int argc,char *argv[])
 	catch(const Glib::FileError& ex)
 	{
 		std::cerr << "FileError: " << ex.what() << std::endl;
-		std::cout << "\nLuppp has encountered an error. It seems that" << std::endl;
-		std::cout << "mainwindow.glade, cannot be found in its usual place." << std::endl;
-		std::cout << "Luppp cannot continue without this file. Sorry..." << std::endl;
+		std::cout << "\nAutoMate has encountered an error. It seems that" << std::endl;
+		std::cout << "automate.glade, cannot be found in its usual place." << std::endl;
+		std::cout << "AutoMate cannot continue without this file. Sorry..." << std::endl;
 		exit(1);
 	}
 	catch(const Gtk::BuilderError& ex)

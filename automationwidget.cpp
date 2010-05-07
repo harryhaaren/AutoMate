@@ -101,35 +101,27 @@ bool AutomationWidget::onScrollEvent(GdkEventScroll *event)
 
 float AutomationWidget::getValue()
 {
-	// takes "time" a float for % across the screen, and
-	// uses that X position to get the Y co-ord at that pos to return that
+	// takes "time" (playhead represents it) a float for % across the screen,
+	// and uses that X position to get the Y co-ord at that pos to return that
 	
 	
-	int xIndex = 0;
+	int xIndex = 1;// compared with later.
 	
-	//------------------ Page 1 ---- ------------------------------------------
-	
-	//######################## check this loop, xIndex should be going up.#####
-	
-	
-	/*
-	for (int i = 0; time < horizontals.at(i); i++)
+	for(int i = 1; i < horizontals.size(); i++)
 	{
-		std::cout << "T: " << time << "\t hori@"<<i<<": "<<horizontals.at(i+1)<<std::endl;
-	}*/
-	
-	while (xIndex > horizontals.at(xIndex))
-		xIndex++;
+		if (time > horizontals.at(i))
+			xIndex++;
+	}
 	
 	// xIndex		is the next point
 	// xIndex - 1	is the previous
 	std::cout << "xIndex = " << xIndex << std::endl;
 	
 	//							Playhead			x1
-	float timeFromOrigin = ( time     -     horizontals.at(xIndex));
+	float timeFromOrigin = ( time     -     horizontals.at(xIndex-1));
 	
 	//							x2							x1
-	float distFromOrigin = horizontals.at(xIndex+1) - horizontals.at(xIndex);
+	float distFromOrigin = horizontals.at(xIndex) - horizontals.at(xIndex-1);
 	
 	//	create %age along the way marker
 	float percentAlongPoints = timeFromOrigin / distFromOrigin;
@@ -137,31 +129,18 @@ float AutomationWidget::getValue()
 	//	make percentBetweenPoints:     float         - (int)of float
 	float percentBetweenPoints = percentAlongPoints - (int)percentAlongPoints;
 	
-	std::cout << "% between points: " << percentBetweenPoints << std::endl;
+	//std::cout << "% between points: " << percentBetweenPoints << std::endl;
 	
-	//------------------ Page 1 DONE ------------------------------------------
-	
-	//------------------ Page 2 -----------------------------------------------
 	//    difference In height between points
-	float diffInHeight = ( verticals.at(xIndex+1)     -  verticals.at(xIndex));
+	float diffInHeight = ( verticals.at(xIndex)     -  verticals.at(xIndex-1));
 	
 	//    amount of Y to add for playhead
 	float yAmountToAddAtPlayhead = diffInHeight * percentBetweenPoints;
-	//------------------ Page 2 DONE ------------------------------------------
-	
-	//------------------ Page 3 -----------------------------------------------
 	
 	// add on whatever value the smaller of Y1 or Y2 is
-	float returnValue = yAmountToAddAtPlayhead + verticals.at(xIndex);
+	float returnValue = yAmountToAddAtPlayhead + verticals.at(xIndex-1);
 	
-	// if line is going up, invert the value:
-	if ( verticals.at(xIndex) < verticals.at(xIndex+1))
-		returnValue = 1 - returnValue;
-	
-	// return absolute value of this
 	return returnValue;
-	
-	//------------------ Page 3 DONE-------------------------------------------
 }
 
 void AutomationWidget::update_time(float incomingTime)
@@ -332,8 +311,6 @@ bool AutomationWidget::on_expose_event(GdkEventExpose* event)
 			int drawX2 = horizontals.at(index+1) * width;
 			int drawY2 = verticals.at(index+1) * height;
 			
-			//std::cout << std::endl << "DrwPnts: " << horizontals.at(index) << " " << verticals.at(index) << "\t";
-			
 			// Invert heights, so 0 = bottom, 127 = top
 			drawY1 = height - drawY1;
 			drawY2 = height - drawY2;
@@ -353,6 +330,7 @@ bool AutomationWidget::on_expose_event(GdkEventExpose* event)
 			cr -> stroke();
 			
 			// Show point Co-ords?
+			/*
 			cr -> move_to (drawX1-30,  drawY1 );
 			cr -> set_source_rgb (1.0,0.0,0.0);
 			cr -> show_text  ( convertFloatToStr( (int)(horizontals.at(index) * 100 ) ) );
@@ -362,14 +340,29 @@ bool AutomationWidget::on_expose_event(GdkEventExpose* event)
 			cr -> set_source_rgb (1.0,1.0,0.0);
 			cr -> show_text  ( convertFloatToStr( (int)(verticals.at(index) *100 ) ) );
 			cr -> stroke();
+			*/
 			
 		}
 		
 		
+		// draw playhead
 		cr -> set_source_rgb(1.0,0.0,0.0);
 		cr -> move_to (time * width , 0);
 		cr -> line_to (time * width , height);
 		cr -> stroke();
+		
+		// draw playhead "spot-value"
+		/* Debug version (ugly)
+		cr -> move_to ( time*width - 25, getValue()*height );
+		cr -> set_source_rgb (1.0,1.0,0.0);
+		cr -> show_text  ( "-<=0=>-" );
+		cr -> stroke();
+		*/
+		
+		cr -> set_source_rgb (1.0,1.0,0.0);
+		cr -> arc( time*width , (1 - getValue())*height , 12.5 , 0 ,2 * 3.1415);
+		cr -> stroke();
+		
 	} 
 	return true;
 } // on_expose_event()

@@ -17,11 +17,11 @@ class AutomationWidget : public Gtk::DrawingArea
 	protected:
 		float time;
 		int numberOfBars;
-		int playheadPosition;				//	strange resolution
+		int playheadPosition;				//	in pixels
 		int width,height;
-		float mouseX,mouseY;					// pixel co-ordinates, NOT points values.
-		std::vector <float> horizontals;
-		std::vector <float> verticals;
+		float mouseX,mouseY;				// in pixels
+		std::vector <float> horizontals;	// floating-points
+		std::vector <float> verticals;		// floating-points
 		
 		void redraw();
 		int  timer_callback();
