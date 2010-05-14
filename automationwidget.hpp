@@ -9,10 +9,17 @@ class AutomationWidget : public Gtk::DrawingArea
 		AutomationWidget();
 		~AutomationWidget();
 		
-		float  getValue ();
-		void update_time(float time);
+		float getValue ();
+		void update_time();
 		void setNumberOfBars(int setNumberOfBars);
 		void set_points(std::vector<int> pointsIn);
+		
+		bool onScrollEvent	(GdkEventScroll *event);
+		bool onMouseClick	(GdkEventButton *event);
+		bool onMouseMove	(GdkEventMotion *event);
+		bool on_expose_event(GdkEventExpose *event);
+		bool onMouseButton1Down( GdkEventButton *event ) ;
+		bool onMouseButton3Down( GdkEventButton *event ) ;
 	
 	protected:
 		float time;
@@ -23,15 +30,11 @@ class AutomationWidget : public Gtk::DrawingArea
 		std::vector <float> horizontals;	// floating-points
 		std::vector <float> verticals;		// floating-points
 		
-		void redraw();
+		bool redraw();
 		int  timer_callback();
-		bool onScrollEvent	(GdkEventScroll *event);
-		bool onMouseClick	(GdkEventButton *event);
-		bool onMouseMove	(GdkEventMotion *event);
-		bool on_expose_event(GdkEventExpose *event);
 		std::string convertFloatToStr (float number);
-		bool onMouseButton1Down( GdkEventButton *event ) ;
-		bool onMouseButton3Down( GdkEventButton *event ) ;
+		
+
 };
 
 #endif // AUTOMATIONWIDGET

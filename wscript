@@ -14,9 +14,18 @@ def configure(conf):
 	
 	conf.check_tool('compiler_cxx')
 	conf.check_cfg	(package='gtkmm-2.4',at_least_version='2.0.0',args='--cflags --libs',uselib_store='GTKMM')
+	conf.check_cfg	(package='jack',at_least_version='1.0.0',args='--cflags --libs',uselib_store='JACK')
 
 def build(bld):
 	print 'Building the sources to objects...'
+	
+	bld.new_task_gen(
+		features	= 'cxx cstaticlib',
+		source		= 'jackmidiout.cpp',
+		includes	= '/usr/include',
+		uselib		= 'JACK',
+		target		= 'jackmidiout',
+		export_dirs	= '.'	)
 	
 	bld.new_task_gen(
 		features	= 'cxx cstaticlib',
@@ -27,11 +36,20 @@ def build(bld):
 		export_dirs	= '.'	)
 	
 	bld.new_task_gen(
+		features	= 'cxx cstaticlib',
+		source		= 'automationtrack.cpp',
+		includes	= '/usr/include',
+		uselib		= 'GTKMM',
+		uselib_local= 'automationwidget jackmidiout',
+		target		= 'automationtrack',
+		export_dirs	= '.'	)
+	
+	bld.new_task_gen(
 		features	= 'cxx cprogram',
 		source		= 'main.cpp',
 		includes	= '/usr/include',
 		uselib		= 'GTKMM',
-		uselib_local= 'automationwidget',
+		uselib_local= 'automationtrack',
 		target		= 'test.out'	)
 
 def shutdown():

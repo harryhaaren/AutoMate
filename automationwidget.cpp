@@ -31,16 +31,19 @@ AutomationWidget::AutomationWidget()
 	numberOfBars = 4; // Draws "bar lines" on widget
 	
 	// Add GTK events to this widget
-	add_events( Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
+	add_events( Gdk::EXPOSURE_MASK | Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
 	
 	set_size_request(100,50);
+	
 	
 	signal_button_press_event().connect( sigc::mem_fun( *this, &AutomationWidget::onMouseClick ) );
 	signal_motion_notify_event().connect( sigc::mem_fun( *this, &AutomationWidget::onMouseMove ) );
 	
 	signal_scroll_event().connect( sigc::mem_fun( *this, &AutomationWidget::onScrollEvent ) );
 	
-	Glib::signal_timeout().connect(sigc::mem_fun(*this, &AutomationWidget::timer_callback), 20);
+	
+	//Glib::signal_timeout().connect(sigc::mem_fun(*this, &AutomationWidget::redraw), 100);
+	
 }
 
 AutomationWidget::~AutomationWidget()
@@ -50,18 +53,6 @@ AutomationWidget::~AutomationWidget()
 void AutomationWidget::setNumberOfBars(int setNumberOfBars)
 {
 	numberOfBars = setNumberOfBars;
-}
-
-int AutomationWidget::timer_callback ()
-{
-	time = time + 0.01 ;
-	
-	if(time > 1.0)
-		time = 0;
-		
-	update_time(time);
-	
-	return 1;
 }
 
 bool AutomationWidget::onMouseMove (GdkEventMotion *event)
@@ -115,7 +106,7 @@ float AutomationWidget::getValue()
 	
 	// xIndex		is the next point
 	// xIndex - 1	is the previous
-	std::cout << "xIndex = " << xIndex << std::endl;
+	//std::cout << "xIndex = " << xIndex << std::endl;
 	
 	//							Playhead			x1
 	float timeFromOrigin = ( time     -     horizontals.at(xIndex-1));
@@ -143,10 +134,13 @@ float AutomationWidget::getValue()
 	return returnValue;
 }
 
-void AutomationWidget::update_time(float incomingTime)
+void AutomationWidget::update_time()
 {
-	time = incomingTime;
+	time = time + 0.05;
 	
+	if ( time > 1) { time = 0; }
+	
+	// proper checking
 	if ( time > 1) { time = 1; }
 	if ( time < 0) { time = 0; }
 	
@@ -160,7 +154,7 @@ void AutomationWidget::update_time(float incomingTime)
 	redraw();
 }
 
-void AutomationWidget::redraw()
+bool AutomationWidget::redraw()
 {
 	// force our program to redraw the entire widget.
 	Glib::RefPtr<Gdk::Window> win = get_window();
@@ -169,6 +163,8 @@ void AutomationWidget::redraw()
 	    Gdk::Rectangle r(0, 0, get_allocation().get_width(),get_allocation().get_height());
 	    win->invalidate_rect(r, false);
 	}
+	
+	return true;
 }
 
 bool AutomationWidget::onMouseClick (GdkEventButton *event)
@@ -253,9 +249,7 @@ void AutomationWidget::set_points(std::vector<int> pointsIn)
 
 bool AutomationWidget::on_expose_event(GdkEventExpose* event)
 {
-	#ifdef DEBUG_AUTOMATIONWIDGET
-	std::cout << "In on_expose_event: automationWidget" << std::endl;
-	#endif
+	//std::cout << "In on_expose_event: automationWidget" << std::endl;
 	
 	// This is where we draw on the window
 	Glib::RefPtr<Gdk::Window> window = get_window();

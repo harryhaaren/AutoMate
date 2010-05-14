@@ -2,12 +2,9 @@
 #include <cstdlib>
 #include <vector>
 
-#include "automationwidget.hpp"
+#include "automationtrack.hpp"
 
 #include <gtkmm.h>
-
-//#define DEBUG_AUTOMATIONWIDGET
-
 
 int main(int argc,char *argv[])
 {
@@ -17,10 +14,6 @@ int main(int argc,char *argv[])
 	Gtk::Window window;
 	Gtk::VBox   hbox;
 	Gtk::Button button;
-	
-	AutomationWidget autoWidget;
-	//AutomationWidget autoWidget2;
-	//AutomationWidget autoWidget3;
 	
 	//--- Load GLADE file
 	Gtk::VBox 	*vBox = 0;
@@ -62,6 +55,11 @@ int main(int argc,char *argv[])
 	}
 	#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 	
+	
+	// ######### create Automation tracks #####
+	AutomationTrack autoTrack;
+	// ######### End ##########################
+	
 	//Get the Glade-instantiated Dialog:
 	refBuilder->get_widget("mainWindow", gladeWindow);
 	if(gladeWindow)
@@ -70,27 +68,20 @@ int main(int argc,char *argv[])
 		refBuilder->get_widget("widgetVBox", vBox);
 		if(vBox)
 		{
-			vBox -> add (autoWidget);
+			// ugly: but it passes events straight to widget.. which is nice
+			vBox -> add (autoTrack.widget);
 			vBox -> set_border_width(10);
 			vBox -> set_spacing(10);
-			//vBox -> add (autoWidget2);
-			//vBox -> add (autoWidget3);
-			vBox -> show_all();
 		}
 	}
 	//--- END load GLADE file
 	
-	autoWidget.update_time(0);
-	
-	//autoWidget2.setNumberOfBars(4);
-	
+	// Set up window details
 	gladeWindow -> set_title("AutoMate");
 	gladeWindow -> set_default_size(700,250);
+	gladeWindow -> show_all();
 	
-	// bind the "new-data" signal from MIDI -> not implemented yet
-	//midi::signal_newMidiData.connect( sigc::ptr_fun( midi::filterData ) );
-	
-	//Glib::signal_timeout().connect ( sigc::mem_fun ( &autoWidget ,  &AutomationWidget::get_value ) , 100 );
+	Glib::signal_timeout().connect(sigc::mem_fun( autoTrack, &AutomationTrack::updateTime ), 100);
 	
 	kit.run(*gladeWindow);
 	
