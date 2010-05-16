@@ -10,7 +10,7 @@ class AutomationWidget : public Gtk::DrawingArea
 		~AutomationWidget();
 		
 		float getValue ();
-		void update_time();
+		void update_time(unsigned int inTime);
 		void setNumberOfBars(int setNumberOfBars);
 		void set_points(std::vector<int> pointsIn);
 		

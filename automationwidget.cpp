@@ -42,7 +42,7 @@ AutomationWidget::AutomationWidget()
 	signal_scroll_event().connect( sigc::mem_fun( *this, &AutomationWidget::onScrollEvent ) );
 	
 	
-	//Glib::signal_timeout().connect(sigc::mem_fun(*this, &AutomationWidget::redraw), 100);
+	Glib::signal_timeout().connect(sigc::mem_fun(*this, &AutomationWidget::redraw), 100);
 	
 }
 
@@ -134,11 +134,13 @@ float AutomationWidget::getValue()
 	return returnValue;
 }
 
-void AutomationWidget::update_time()
+void AutomationWidget::update_time(unsigned int inTime)
 {
-	time = time + 0.05;
+	//std::cout << "Setting time in AutomationWidget" << std::endl;
 	
-	if ( time > 1) { time = 0; }
+	time = (inTime /4.0) - 0.25;
+	
+	std::cout << time << std::endl;
 	
 	// proper checking
 	if ( time > 1) { time = 1; }
@@ -149,9 +151,6 @@ void AutomationWidget::update_time()
 	// playheadPosition is the num of pixels across
 	playheadPosition = time*width;
 	
-	std::cout << "Value: " << getValue() << std::endl;
-	
-	redraw();
 }
 
 bool AutomationWidget::redraw()

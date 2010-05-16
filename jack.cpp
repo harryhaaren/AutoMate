@@ -36,17 +36,19 @@ void Jack::setTrackVector(AutomationTrack* array)
 
 void Jack::activate()
 {
-	std::cout << "activate()" << std::endl;
+	std::cout << "Activating JACK client..." << std::endl;
 	
 	if (jack_activate(client))
 	{
-		std::cout<<  "cannot activate client" << std::endl;
+		std::cout <<  "Cannot activate client" << std::endl;
+		exit(1);
 	}
+	std::cout << "\t\tDone!" << std::endl;
 }
 
 int Jack::staticProcess(jack_nframes_t nframes, void *arg)
 {
-	return static_cast<Jack*>(arg)->process(nframes);;
+	return static_cast<Jack*>(arg)->process(nframes);
 }
 
 int Jack::process(jack_nframes_t nframes)
@@ -63,17 +65,39 @@ int Jack::process(jack_nframes_t nframes)
 	transportQuery 			= jack_transport_query ( client, &positionQuery );
 	jack_nframes_t frame	= jack_get_sample_rate ( client );
 	
+	
+	// if transport rolling
 	if( (transportQuery & JackTransportRolling) && (positionQuery.valid & JackPositionBBT) && (positionQuery.tick == 0) )
 	{
 		buffer = jack_midi_event_reserve(out_port_buf, 0, 3);
 		
+		/*
 		// write note on
 		buffer[0] = 144;	// note on 
 		buffer[1] = 60;		// which note
 		buffer[2] = 127;	// velocity
+		* */
 	}
 	
-	//std::cout << jack_frame_time(client) % 22050 << std::endl;
+	if(transportQuery & JackTransportRolling && (positionQuery.valid & JackPositionBBT) && (positionQuery.tick == 0))
+	{
+		// loop over tracks to: get values of MidiCC, and currentValue;
+		
+		
+		// For testing only one track, insert 1 instead of 4
+		for (int i = 0; i < 4; i++)
+		{
+			arrayPointer[i].setTime( positionQuery.beat );
+			float value = arrayPointer[i].getValue();
+			
+			buffer = jack_midi_event_reserve(out_port_buf, 0, 3);
+			
+			// write note on
+			buffer[0] = 144;					// note on 
+			buffer[1] = value * 60 + 24;			// which note
+			buffer[2] = 100;					// velocity
+		}
+	}
 	
 	return 0;
 }

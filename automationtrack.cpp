@@ -14,18 +14,18 @@ AutomationTrack::~AutomationTrack()
 	std::cout << "~AutomationTrack();" << std::endl;
 }
 
-bool AutomationTrack::updateTime()
+bool AutomationTrack::setTime(unsigned int time)
 {
 	//std::cout << "AutomationTrack::updateTime();" << std::endl;
 	
-	widget.update_time();
+	widget.update_time(time);
 	
 	return true;
 }
 
 float AutomationTrack::getValue()
 {
-	std::cout << "AutomationTrack::getValue();" << std::endl;
+	//std::cout << "AutomationTrack::getValue();" << std::endl;
 	
 	return widget.getValue();
 }
