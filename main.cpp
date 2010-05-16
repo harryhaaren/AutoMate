@@ -56,9 +56,8 @@ int main(int argc,char *argv[])
 	#endif /* !GLIBMM_EXCEPTIONS_ENABLED */
 	
 	
-	// ######### create Automation tracks #####
+	// create Automation tracks here
 	AutomationTrack autoTrack;
-	// ######### End ##########################
 	
 	//Get the Glade-instantiated Dialog:
 	refBuilder->get_widget("mainWindow", gladeWindow);

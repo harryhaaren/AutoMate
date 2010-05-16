@@ -21,10 +21,10 @@ def build(bld):
 	
 	bld.new_task_gen(
 		features	= 'cxx cstaticlib',
-		source		= 'jackmidiout.cpp',
+		source		= 'jack.cpp',
 		includes	= '/usr/include',
 		uselib		= 'JACK',
-		target		= 'jackmidiout',
+		target		= 'myjack',
 		export_dirs	= '.'	)
 	
 	bld.new_task_gen(
@@ -40,7 +40,7 @@ def build(bld):
 		source		= 'automationtrack.cpp',
 		includes	= '/usr/include',
 		uselib		= 'GTKMM',
-		uselib_local= 'automationwidget jackmidiout',
+		uselib_local= 'automationwidget myjack',
 		target		= 'automationtrack',
 		export_dirs	= '.'	)
 	
@@ -62,7 +62,7 @@ def shutdown():
 	
 	if os.path.isdir(os.path.join(os.getcwd(),'build/default')):
 		try:
-			shutil.copy2('automate.glade','./build/default/automate.glade')
+			shutil.copy2('automate.glade','build/default/automate.glade')
 			print 'Copying new resouces...'
 		except:
 			print 'Copying failed. Acces denied?'

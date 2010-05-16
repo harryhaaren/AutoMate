@@ -3,7 +3,7 @@
 
 #include "automationwidget.hpp"
 
-#include "jackmidiout.hpp"
+#include "jack.hpp"
 
 #include <iostream>
 #include <gtkmm/box.h>
@@ -20,7 +20,7 @@ class AutomationTrack : public Gtk::DrawingArea
 		void setChannel(int inChannel);
 		
 		AutomationWidget widget;
-		JackMidiOut jackOut;
+		Jack jackOut;
 	
 	private:
 		int midiCC;

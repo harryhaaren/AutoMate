@@ -1,16 +1,16 @@
 
-#include "jackmidiout.hpp"
+#include "jack.hpp"
 
-int				JackMidiOut::i;
-jack_client_t*	JackMidiOut::client;
-jack_port_t	*	JackMidiOut::inputPort;
-jack_port_t	*	JackMidiOut::outputPort;
+int				Jack::i;
+jack_client_t*	Jack::client;
+jack_port_t	*	Jack::inputPort;
+jack_port_t	*	Jack::outputPort;
 
-JackMidiOut::JackMidiOut()
+Jack::Jack()
 {
 	i = 0;
 	
-	std::cout << "JackMidiOut()" << std::flush;
+	std::cout << "Jack()" << std::flush;
 	
 	if ((client = jack_client_open("AutoMate", JackNullOption, NULL)) == 0)
 	{
@@ -26,12 +26,12 @@ JackMidiOut::JackMidiOut()
 	
 }
 
-JackMidiOut::~JackMidiOut()
+Jack::~Jack()
 {
-	std::cout << "~JackMidiOut()" << std::endl;
+	std::cout << "~Jack()" << std::endl;
 }
 
-void JackMidiOut::activate()
+void Jack::activate()
 {
 	std::cout << "activate()" << std::endl;
 	
@@ -42,7 +42,7 @@ void JackMidiOut::activate()
 }
 
 
-int JackMidiOut::process(jack_nframes_t nframes, void *arg)
+int Jack::process(jack_nframes_t nframes, void *arg)
 {
 	jack_midi_event_t in_event;
 	

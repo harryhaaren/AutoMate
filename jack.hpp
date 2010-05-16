@@ -1,15 +1,15 @@
-#ifndef JACKMIDIOUT
-#define JACKMIDIOUT
+#ifndef JACK
+#define JACK
 
 #include <iostream>
 #include <jack/jack.h>
 #include <jack/midiport.h>
 
-class JackMidiOut
+class Jack
 {
 	public:
-		JackMidiOut();
-		~JackMidiOut();
+		Jack();
+		~Jack();
 		
 		void activate();
 		
