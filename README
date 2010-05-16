@@ -1,0 +1,14 @@
+					AutoMate
+
+The idea behind this project is that there are a lot of seperate
+programs out there for linux audio use, and for each one to implement
+an automation editor & recorder would be pointless. So i took the liberty
+to try an pen one myself. I hope its useful to some of you.
+
+The user interface should be very self explanatory, there's an automation
+line, and that "read" by the playhead (the red line), and the value is
+then sent out via Jack MIDI. Simple huh?
+
+All feedback / bugs / feature requests to: harryhaaren@gmail.com
+
+Cheers, -Harry van Haaren
