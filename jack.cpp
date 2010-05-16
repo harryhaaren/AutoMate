@@ -51,66 +51,29 @@ int Jack::staticProcess(jack_nframes_t nframes, void *arg)
 
 int Jack::process(jack_nframes_t nframes)
 {
-	//std::cout << "Process entered" << std::endl;
-	
-	jack_midi_event_t in_event;
-	jack_nframes_t event_index = 0;
+
 	jack_position_t			positionQuery;
 	jack_transport_state_t	transportQuery;
 	
-	//std::cout << "Getting port buffers" << std::endl;
-	
-	void* port_buf = jack_port_get_buffer( inputPort, nframes);
-	
-	/*
-	// input: get number of events, and process them.
-	jack_nframes_t event_count = jack_midi_get_event_count(port_buf);
-	if(event_count > 1)
-	{
-		std::cout << "midisine: have " << event_count << " events" << std::endl;
-		for(int i=0; i<event_count; i++)
-		{
-			jack_midi_event_get(&in_event, port_buf, i);
-			std::cout << "event" << i << "time is " << in_event.time << ". 1st byte is " << *(in_event.buffer) << "." << std::endl;
-		}
-	}
-	*/
-	
-	// output:
+	// get output port buffers
 	void* out_port_buf = jack_port_get_buffer( outputPort, nframes);
 	unsigned char* buffer;
 	jack_midi_clear_buffer(out_port_buf);
 	
-	//std::cout << "Querying transport" << std::endl;
+	transportQuery 			= jack_transport_query ( client, &positionQuery );
+	jack_nframes_t frame	= jack_get_sample_rate ( client );
 	
-	transportQuery = jack_transport_query(client, &positionQuery );
-	
-	//std::cout << "Comparing frame & bpm info" << std::endl;
-	
-	jack_nframes_t frame = jack_get_sample_rate(client);
-	
-	if(  (unsigned int) (((int)frame) * 60 / bpm)) // (int)(positionQuery->frame) >=
+	if( (transportQuery & JackTransportRolling) && (positionQuery.valid & JackPositionBBT) && (positionQuery.tick == 0) )
 	{
 		buffer = jack_midi_event_reserve(out_port_buf, 0, 3);
 		
 		// write note on
 		buffer[0] = 144;	// note on 
 		buffer[1] = 60;		// which note
-		buffer[2] = 127;	// velocity 
+		buffer[2] = 127;	// velocity
 	}
-	/*
-	if( positionQuery->frame > jack_get_sample_rate(client) * 60 / bpm)
-	{
-		buffer = jack_midi_event_reserve(out_port_buf, 0, 3);
-		
-		// write note off
-		buffer[0] = 128;	// note off 
-		buffer[1] = 60;		// which note
-		buffer[2] = 127;	// velocity 
-	}
-	* */
 	
-	//std::cout << "normal Process returning" << std::endl;
+	//std::cout << jack_frame_time(client) % 22050 << std::endl;
 	
 	return 0;
 }
