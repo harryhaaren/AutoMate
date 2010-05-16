@@ -5,6 +5,8 @@
 #include <jack/jack.h>
 #include <jack/midiport.h>
 
+#include "automationtrack.hpp"
+
 class Jack
 {
 	public:
@@ -13,14 +15,20 @@ class Jack
 		
 		void activate();
 		
-		static int process(jack_nframes_t nframes, void *arg);
+		void setTrackVector(AutomationTrack* array);
+		
+		static int staticProcess(jack_nframes_t nframes, void *arg);
 	
 	private:
-		static int i;
+		float bpm;
 		
-		static jack_client_t*	client;
-		static jack_port_t*		inputPort;
-		static jack_port_t*		outputPort;
+		int process(jack_nframes_t nframes);
+		
+		AutomationTrack* arrayPointer;
+		
+		jack_client_t*	client;
+		jack_port_t*		inputPort;
+		jack_port_t*		outputPort;
 };
 
 #endif 

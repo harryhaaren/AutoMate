@@ -5,12 +5,8 @@ AutomationTrack::AutomationTrack()
 {
 	std::cout << "AutomationTrack();" << std::endl;
 	
-	add_events( Gdk::EXPOSURE_MASK | Gdk::BUTTON_PRESS_MASK | Gdk::POINTER_MOTION_MASK | Gdk::BUTTON_RELEASE_MASK | Gdk::SCROLL_MASK);
-	
 	midiCC = 10;
 	midiChannel = 0;
-	
-	jackOut.activate();
 }
 
 AutomationTrack::~AutomationTrack()
@@ -25,6 +21,13 @@ bool AutomationTrack::updateTime()
 	widget.update_time();
 	
 	return true;
+}
+
+float AutomationTrack::getValue()
+{
+	std::cout << "AutomationTrack::getValue();" << std::endl;
+	
+	return widget.getValue();
 }
 
 void AutomationTrack::setChannel(int inChannel)

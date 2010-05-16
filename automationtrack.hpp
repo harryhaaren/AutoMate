@@ -3,24 +3,21 @@
 
 #include "automationwidget.hpp"
 
-#include "jack.hpp"
-
 #include <iostream>
-#include <gtkmm/box.h>
 
-class AutomationTrack : public Gtk::DrawingArea
+class AutomationTrack
 {
 	public:
 		AutomationTrack();
 		~AutomationTrack();
 		
 		bool updateTime();
+		float getValue();
 		
 		void setCC(int inCC);
 		void setChannel(int inChannel);
 		
 		AutomationWidget widget;
-		Jack jackOut;
 	
 	private:
 		int midiCC;

@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <vector>
 
+#include "jack.hpp"
 #include "automationtrack.hpp"
 
 #include <gtkmm.h>
@@ -10,6 +11,8 @@ int main(int argc,char *argv[])
 {
 	
 	Gtk::Main kit(argc, argv);
+	
+	Jack jack;
 	
 	Gtk::Window window;
 	Gtk::VBox   hbox;
@@ -57,7 +60,7 @@ int main(int argc,char *argv[])
 	
 	
 	// create Automation tracks here
-	AutomationTrack autoTrack;
+	AutomationTrack autoTrack[4];
 	
 	//Get the Glade-instantiated Dialog:
 	refBuilder->get_widget("mainWindow", gladeWindow);
@@ -68,7 +71,9 @@ int main(int argc,char *argv[])
 		if(vBox)
 		{
 			// ugly: but it passes events straight to widget.. which is nice
-			vBox -> add (autoTrack.widget);
+			for (int i = 0; i < 4; i++)
+				vBox -> add (autoTrack[i].widget);
+			
 			vBox -> set_border_width(10);
 			vBox -> set_spacing(10);
 		}
@@ -80,7 +85,13 @@ int main(int argc,char *argv[])
 	gladeWindow -> set_default_size(700,250);
 	gladeWindow -> show_all();
 	
-	Glib::signal_timeout().connect(sigc::mem_fun( autoTrack, &AutomationTrack::updateTime ), 100);
+	//Glib::signal_timeout().connect(sigc::mem_fun( autoTrack, &AutomationTrack::updateTime ), 100);
+	
+	// add the array to the jack class, so it can update the times
+	jack.setTrackVector(&autoTrack[0]);
+	
+	// activate the client
+	jack.activate();
 	
 	kit.run(*gladeWindow);
 	

@@ -21,14 +21,6 @@ def build(bld):
 	
 	bld.new_task_gen(
 		features	= 'cxx cstaticlib',
-		source		= 'jack.cpp',
-		includes	= '/usr/include',
-		uselib		= 'JACK',
-		target		= 'myjack',
-		export_dirs	= '.'	)
-	
-	bld.new_task_gen(
-		features	= 'cxx cstaticlib',
 		source		= 'automationwidget.cpp',
 		includes	= '/usr/include',
 		uselib		= 'GTKMM',
@@ -40,8 +32,16 @@ def build(bld):
 		source		= 'automationtrack.cpp',
 		includes	= '/usr/include',
 		uselib		= 'GTKMM',
-		uselib_local= 'automationwidget myjack',
+		uselib_local= 'automationwidget',
 		target		= 'automationtrack',
+		export_dirs	= '.'	)
+	
+	bld.new_task_gen(
+		features	= 'cxx cstaticlib',
+		source		= 'jack.cpp',
+		includes	= '/usr/include',
+		uselib		= 'JACK GTKMM',
+		target		= 'myjack',
 		export_dirs	= '.'	)
 	
 	bld.new_task_gen(
@@ -49,7 +49,7 @@ def build(bld):
 		source		= 'main.cpp',
 		includes	= '/usr/include',
 		uselib		= 'GTKMM',
-		uselib_local= 'automationtrack',
+		uselib_local= 'automationtrack myjack',
 		target		= 'test.out'	)
 
 def shutdown():
