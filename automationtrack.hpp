@@ -4,6 +4,7 @@
 #include "automationwidget.hpp"
 
 #include <iostream>
+#include <jack/jack.h>
 #include <gtkmm.h>
 #include <gtkmm/comboboxtext.h>
 
@@ -13,7 +14,7 @@ class AutomationTrack
 		AutomationTrack();
 		~AutomationTrack();
 		
-		bool setTime(unsigned int time);
+		bool setTime( jack_transport_state_t transport, jack_position_t pos );
 		float getValue();
 		
 		int getCC();
@@ -33,12 +34,18 @@ class AutomationTrack
 		int midiCC;
 		int midiChannel;
 		
+		float time;
+		
 		// Widgets
 		Gtk::VBox* leftBox;
 		Gtk::ComboBoxText cc;
 		Gtk::ComboBoxText channel;
 		Gtk::ToggleButton* toggleButton;
 		AutomationWidget widget;
+		
+		// time handling
+		jack_position_t pos;
+		jack_transport_state_t transport;
 		
 		// functions for selecting inputs
 		void on_cc_changed();

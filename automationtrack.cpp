@@ -80,11 +80,20 @@ AutomationTrack::~AutomationTrack()
 {
 }
 
-bool AutomationTrack::setTime(unsigned int time)
+bool AutomationTrack::setTime(jack_transport_state_t inTransport , jack_position_t inPos)
 {
-	//std::cout << "AutomationTrack::updateTime();" << std::endl;
+	pos  = inPos;
+	transport = inTransport;
 	
-	widget.update_time(time);
+	// gotta sort out the length of the automation loop, beats bars, 
+	// current frame & beat bar tick. Finally send a float to update_time
+	if (transport & JackTransportRolling)
+	{
+		time = ((pos.beat-1) + (pos.tick / pos.ticks_per_beat)) / 4.0;
+		
+		// here we pass a float value 0 = begin, 1 = end
+		widget.update_time( time );
+	}
 	
 	return true;
 }
@@ -92,7 +101,7 @@ bool AutomationTrack::setTime(unsigned int time)
 float AutomationTrack::getValue()
 {
 	//std::cout << "AutomationTrack::getValue();" << std::endl;
-	
+	if (transport & JackTransportRolling)
 	return widget.getValue();
 }
 

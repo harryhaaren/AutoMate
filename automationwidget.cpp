@@ -134,13 +134,9 @@ float AutomationWidget::getValue()
 	return returnValue;
 }
 
-void AutomationWidget::update_time(unsigned int inTime)
+void AutomationWidget::update_time(float inTime)
 {
-	//std::cout << "Setting time in AutomationWidget" << std::endl;
-	
-	time = (inTime /4.0) - 0.25;
-	
-	std::cout << time << std::endl;
+	time = inTime;
 	
 	// proper checking
 	if ( time > 1) { time = 1; }

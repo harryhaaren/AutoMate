@@ -31,7 +31,7 @@ def build(bld):
 		features	= 'cxx cstaticlib',
 		source		= 'automationtrack.cpp',
 		includes	= '/usr/include',
-		uselib		= 'GTKMM',
+		uselib		= 'GTKMM JACK',
 		uselib_local= 'automationwidget',
 		target		= 'automationtrack',
 		export_dirs	= '.'	)

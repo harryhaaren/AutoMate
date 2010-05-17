@@ -62,6 +62,7 @@ int main(int argc,char *argv[])
 	// create Automation tracks here
 	AutomationTrack autoTrack[4];
 	
+	
 	//Get the Glade-instantiated Dialog:
 	refBuilder->get_widget("mainWindow", gladeWindow);
 	if(gladeWindow)

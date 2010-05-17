@@ -63,6 +63,7 @@ int Jack::process(jack_nframes_t nframes)
 	jack_nframes_t frame	= jack_get_sample_rate ( client );
 	
 	
+	/*
 	// if transport rolling
 	if( (transportQuery & JackTransportRolling) && (positionQuery.valid & JackPositionBBT) && (positionQuery.tick == 0) )
 	{
@@ -73,28 +74,30 @@ int Jack::process(jack_nframes_t nframes)
 		buffer[0] = 144;	// note on 
 		buffer[1] = 60;		// which note
 		buffer[2] = 127;	// velocity
-		* */
+		*
 	}
+	*/
 	
-	if(transportQuery & JackTransportRolling && (positionQuery.valid & JackPositionBBT) && (positionQuery.tick == 0))
+	// update the widget regardless of if its active or not
+	if(transportQuery & JackTransportRolling)
+		for (int i = 0; i < 4; i++)
+			arrayPointer[i].setTime( transportQuery, positionQuery );
+	
+	
+	if(transportQuery & JackTransportRolling && (positionQuery.valid & JackPositionBBT) && (positionQuery.tick % 100 == 0))
 	{
-		// loop over tracks to: get values of MidiCC, and currentValue;
-		
-		
 		// For testing only one track, insert 1 instead of 4
 		for (int i = 0; i < 4; i++)
 		{
-			arrayPointer[i].setTime( positionQuery.beat );
-			
 			// check if the thing is "enabled" or "active"
 			if( arrayPointer[i].getActive() )
 			{
 				buffer = jack_midi_event_reserve(out_port_buf, 0, 3);
 				
-				// write note on ( should be CC: 176)
+				// write CC change
 				buffer[0] = 144 + arrayPointer[i].getChannel();
-				buffer[1] = arrayPointer[i].getValue() * 24 + 36;						//arrayPointer[i].getCC() ;
-				buffer[2] = 127;
+				buffer[1] = arrayPointer[i].getCC();
+				buffer[2] = arrayPointer[i].getValue() * 127;
 			}
 		}
 	}
