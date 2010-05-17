@@ -169,7 +169,7 @@ bool AutomationWidget::redraw()
 bool AutomationWidget::onMouseClick (GdkEventButton *event)
 {
 	// sorts out which mouse button was used, and calls the appropriate func.
-	std::cout << "Mouse event->type, event->button: " << event->type << "  " << event->button << std::endl;
+	//std::cout << "Mouse event->type, event->button: " << event->type << "  " << event->button << std::endl;
 	
 	if (event->type == 4 && event->button == 1)
 	{ //     buttonDown          left-mouse button
@@ -198,7 +198,7 @@ bool AutomationWidget::onMouseButton3Down( GdkEventButton *event )
 		if ( remPointX - 0.01  < horizontals.at(i) && horizontals.at(i) < remPointX + 0.01)
 		{
 			// Only remove points if theyre NOT the first or last one
-			if( remPointX > 0.05 && remPointX < 0.95 )
+			if( remPointX > 0.025 && remPointX < 0.975 )
 			{
 				horizontals.erase(horizontals.begin()  + i);
 				verticals.erase( verticals.begin()  + i);
@@ -226,9 +226,14 @@ bool AutomationWidget::onMouseButton1Down( GdkEventButton *event )
 		//std::cout << " InsertIndex: " << insertIndex<< " X: " << pushPointX << " Y: " << pushPointY << std::endl;
 	}
 	
-	horizontals.insert(horizontals.begin() + insertIndex + 1 , pushPointX);
-	verticals.insert(verticals.begin() + insertIndex + 1 , pushPointY);
-	
+	// check its not *too* close to edge, (hard to remove)
+	if( mouseX > width*0.02 && mouseX < width * 0.98)
+	{
+		horizontals.insert(horizontals.begin() + insertIndex + 1 , pushPointX);
+		verticals.insert(verticals.begin() + insertIndex + 1 , pushPointY);
+	}
+	else
+		std::cout << "Not inserting point: Too close to edges" << std::endl;
 	
 	redraw();		// doesnt "redraw" screen, only asks GTKmm to do it on next refresh.
 	
