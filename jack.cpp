@@ -5,11 +5,11 @@ Jack::Jack()
 {
 	bpm = 120.0;
 	
-	std::cout << "Jack()" << std::flush;
+	std::cout << "Creating Jack Client..." << std::flush;
 	
 	if ((client = jack_client_open("AutoMate", JackNullOption, NULL)) == 0)
 	{
-		std::cout << "jack server not running?" << std::endl;
+		std::cout << "\nError: could not create client.\tJACK Server not running?" << std::endl;
 	}
 	
 	inputPort  = jack_port_register (client, "midi_in", JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0);
@@ -23,20 +23,17 @@ Jack::Jack()
 
 Jack::~Jack()
 {
-	std::cout << "~Jack()" << std::endl;
 }
 
 void Jack::setTrackVector(AutomationTrack* array)
 {
-	std::cout << "In setTrackVector" << std::endl;
-	
 	// keep a copy of array's address
 	arrayPointer = array;
 }
 
 void Jack::activate()
 {
-	std::cout << "Activating JACK client..." << std::endl;
+	std::cout << "Activating JACK client..." << std::flush;
 	
 	if (jack_activate(client))
 	{
@@ -88,14 +85,17 @@ int Jack::process(jack_nframes_t nframes)
 		for (int i = 0; i < 4; i++)
 		{
 			arrayPointer[i].setTime( positionQuery.beat );
-			float value = arrayPointer[i].getValue();
 			
-			buffer = jack_midi_event_reserve(out_port_buf, 0, 3);
-			
-			// write note on
-			buffer[0] = 144;					// note on 
-			buffer[1] = value * 60 + 24;			// which note
-			buffer[2] = 100;					// velocity
+			// check if the thing is "enabled" or "active"
+			if( arrayPointer[i].getActive() )
+			{
+				buffer = jack_midi_event_reserve(out_port_buf, 0, 3);
+				
+				// write note on ( should be CC: 176)
+				buffer[0] = 144 + arrayPointer[i].getChannel();
+				buffer[1] = arrayPointer[i].getValue() * 24 + 36;						//arrayPointer[i].getCC() ;
+				buffer[2] = 127;
+			}
 		}
 	}
 	

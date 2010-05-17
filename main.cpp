@@ -72,10 +72,11 @@ int main(int argc,char *argv[])
 		{
 			// ugly: but it passes events straight to widget.. which is nice
 			for (int i = 0; i < 4; i++)
-				vBox -> add (autoTrack[i].widget);
+				vBox -> add ( *autoTrack[i].box);
 			
 			vBox -> set_border_width(10);
 			vBox -> set_spacing(10);
+			vBox -> show_all();
 		}
 	}
 	//--- END load GLADE file
