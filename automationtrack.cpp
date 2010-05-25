@@ -11,6 +11,14 @@ std::string floatToStr (float number)
      return buff.str();
 }
 
+int strToInt(std::string string)
+{
+	std::istringstream buffer(string);
+	int output;
+	buffer >> output;
+	return output;
+}
+
 AutomationTrack::AutomationTrack()
 {
 	midiCC = 10;
@@ -52,15 +60,24 @@ AutomationTrack::AutomationTrack()
 	for (int i = 0; i < 16; i++)
 		channel.append_text( floatToStr(i) );
 	
-	for (int i = 0; i < 20; i++)
-		cc.append_text( floatToStr(i) );
+	cc.append_text(  "1"); // mod wheel
+	cc.append_text(  "2"); // breath
+	cc.append_text(  "7"); // vol
+	cc.append_text( "10"); // pan
+	cc.append_text( "64"); // sustain pedal
+	cc.append_text( "71"); // resonance (timbre)
+	cc.append_text( "74"); // Cutoff freq
+	cc.append_text( "91"); // reverb
+	cc.append_text( "93"); // Chorus
 	
 	box->add( widget );
 	box->show_all();
 	
+	entry = cc.get_entry(); // gets the entry buffer, we connect to it below
+	
 	
 	channel.signal_changed().connect( sigc::mem_fun(*this, &AutomationTrack::on_channel_changed ));
-	cc.signal_changed().connect( sigc::mem_fun(*this, &AutomationTrack::on_cc_changed ));
+	entry->signal_changed().connect( sigc::mem_fun(*this, &AutomationTrack::on_cc_changed ));
 }
 
 void AutomationTrack::on_channel_changed()
@@ -71,8 +88,13 @@ void AutomationTrack::on_channel_changed()
 
 void AutomationTrack::on_cc_changed()
 {
-	midiCC = cc.get_active_row_number();
+	std::string  string = cc.get_entry()->get_text(); //cc.get_active_row_number();
+	
+	if (string != "")
+	{
+		midiCC = strToInt(string);
 	std::cout << "CC changed: " << midiCC << std::endl;
+	}
 }
 
 
