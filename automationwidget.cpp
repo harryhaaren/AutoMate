@@ -54,13 +54,13 @@ AutomationWidget::AutomationWidget()
 	set_size_request(100,50);
 	
 	
-	signal_button_press_event().connect( sigc::mem_fun( *this, &AutomationWidget::onMouseClick ) );
+	signal_button_press_event().connect ( sigc::mem_fun( *this, &AutomationWidget::onMouseClick) );
 	signal_motion_notify_event().connect( sigc::mem_fun( *this, &AutomationWidget::onMouseMove ) );
 	
 	signal_scroll_event().connect( sigc::mem_fun( *this, &AutomationWidget::onScrollEvent ) );
 	
-	
-	Glib::signal_timeout().connect(sigc::mem_fun(*this, &AutomationWidget::redraw), 100);
+	// bad style
+	Glib::signal_timeout().connect(sigc::mem_fun(*this, &AutomationWidget::redraw_all), 100);
 	
 }
 
@@ -102,7 +102,7 @@ bool AutomationWidget::onScrollEvent(GdkEventScroll *event)
 	if ( verticals.at( verticals.size() -1 ) < 0.0) { verticals.at( verticals.size() -1 ) = 0; }
 	if ( verticals.at( verticals.size() -1 ) > 1.0) { verticals.at( verticals.size() -1 ) = 1; }
 	
-	redraw();
+	redraw_all();
 	
 	return 0;
 }
@@ -167,14 +167,27 @@ void AutomationWidget::update_time(float inTime)
 	
 }
 
-bool AutomationWidget::redraw()
+bool AutomationWidget::redraw(int x,int y,int width,int height)
 {
 	// force our program to redraw the entire widget.
 	Glib::RefPtr<Gdk::Window> win = get_window();
 	if (win)
 	{
-	    Gdk::Rectangle r(0, 0, get_allocation().get_width(),get_allocation().get_height());
-	    win->invalidate_rect(r, false);
+		Gdk::Rectangle r(x,y,width,height);
+		win->invalidate_rect(r, false);
+	}
+	
+	return true;
+}
+
+bool AutomationWidget::redraw_all()
+{
+	// force our program to redraw the entire widget.
+	Glib::RefPtr<Gdk::Window> win = get_window();
+	if (win)
+	{
+		Gdk::Rectangle r(0, 0, get_allocation().get_width(),get_allocation().get_height());
+		win->invalidate_rect(r, false);
 	}
 	
 	return true;
@@ -194,7 +207,7 @@ bool AutomationWidget::onMouseClick (GdkEventButton *event)
 		onMouseButton3Down(event);
 	}
 	
-	redraw();
+	redraw_all();
 	
 	return true;
 }
@@ -220,7 +233,7 @@ bool AutomationWidget::onMouseButton3Down( GdkEventButton *event )
 		}
 	}
 	
-	redraw();
+	redraw_all();
 	
 	return 0;
 }
@@ -249,7 +262,7 @@ bool AutomationWidget::onMouseButton1Down( GdkEventButton *event )
 	else
 		std::cout << "Not inserting point: Too close to edges" << std::endl;
 	
-	redraw();		// doesnt "redraw" screen, only asks GTKmm to do it on next refresh.
+	redraw(mouseX - 20, 0, 40 , height);		// doesnt "redraw" screen, only asks GTKmm to do it on next refresh.
 	
 	return true;
 }
@@ -372,7 +385,7 @@ bool AutomationWidget::on_expose_event(GdkEventExpose* event)
 		*/
 		
 		cr -> set_source_rgb (1.0,1.0,0.0);
-		cr -> arc( time*width , (1 - getValue())*height , 12.5 , 0 ,2 * 3.1415);
+		cr -> arc( time*width , (1 - getValue())*height , 8.5 , 0 ,2 * 3.1415);
 		cr -> stroke();
 		
 	} 
