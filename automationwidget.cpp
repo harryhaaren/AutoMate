@@ -54,12 +54,12 @@ AutomationWidget::AutomationWidget()
 	set_size_request(100,50);
 	
 	
-	signal_button_press_event().connect( sigc::mem_fun( *this, &AutomationWidget::onMouseClick ) );
+	signal_button_press_event().connect ( sigc::mem_fun( *this, &AutomationWidget::onMouseClick) );
 	signal_motion_notify_event().connect( sigc::mem_fun( *this, &AutomationWidget::onMouseMove ) );
 	
 	signal_scroll_event().connect( sigc::mem_fun( *this, &AutomationWidget::onScrollEvent ) );
 	
-	
+	// bad style
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &AutomationWidget::redraw_all), 100);
 	
 }
