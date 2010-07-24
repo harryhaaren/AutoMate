@@ -75,7 +75,6 @@ AutomationTrack::AutomationTrack()
 	
 	entry = cc.get_entry(); // gets the entry buffer, we connect to it below
 	
-	
 	channel.signal_changed().connect( sigc::mem_fun(*this, &AutomationTrack::on_channel_changed ));
 	entry->signal_changed().connect( sigc::mem_fun(*this, &AutomationTrack::on_cc_changed ));
 }

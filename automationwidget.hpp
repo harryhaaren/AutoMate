@@ -49,7 +49,8 @@ class AutomationWidget : public Gtk::DrawingArea
 		std::vector <float> horizontals;	// floating-points
 		std::vector <float> verticals;		// floating-points
 		
-		bool redraw();
+		bool redraw_all();
+		bool redraw(int,int,int,int);
 		int  timer_callback();
 		std::string convertFloatToStr (float number);
 		
