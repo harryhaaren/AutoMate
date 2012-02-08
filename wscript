@@ -1,23 +1,23 @@
 #!/usr/bin/python
 
 def set_options(opt):
-	print '\nSetting build options & flags...'
+	print('\nSetting build options & flags...')
 	# We tell Waf we need a C++ compiler
 	opt.tool_options('compiler_cxx')
 
 def init():
-	print 'Initializing WAF build system...'
+	print('Initializing WAF build system...')
 	
 
 def configure(conf):
-	print 'Configuring the build enviroment...'
+	print('Configuring the build enviroment...')
 	
 	conf.check_tool('compiler_cxx')
 	conf.check_cfg	(package='gtkmm-2.4',at_least_version='2.0.0',args='--cflags --libs',uselib_store='GTKMM')
 	conf.check_cfg	(package='jack',at_least_version='1.0.0',args='--cflags --libs',uselib_store='JACK')
 
 def build(bld):
-	print 'Building the sources to objects...'
+	print('Building the sources to objects...')
 	
 	bld.new_task_gen(
 		features	= 'cxx cstaticlib',
@@ -63,9 +63,9 @@ def shutdown():
 	if os.path.isdir(os.path.join(os.getcwd(),'build/default')):
 		try:
 			shutil.copy2('automate.glade','build/default/automate.glade')
-			print 'Copying new resouces...'
+			print('Copying new resouces...')
 		except:
-			print 'Copying failed. Acces denied?'
+			print('Copying failed. Acces denied?')
 	
 	print('shutting down')
 
