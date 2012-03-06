@@ -155,12 +155,12 @@ float AutomationWidget::getValue()
 void AutomationWidget::update_time(float inTime)
 {
 	time = inTime;
-	
+  
 	// proper checking
 	if ( time > 1) { time = 1; }
 	if ( time < 0) { time = 0; }
 	
-	//std::cout << "update_time(): new time" << time << std::endl;
+	std::cout << "update_time(): new time" << time << std::endl;
 	
 	// playheadPosition is the num of pixels across
 	playheadPosition = time*width;
@@ -372,8 +372,8 @@ bool AutomationWidget::on_expose_event(GdkEventExpose* event)
 		
 		// draw playhead
 		cr -> set_source_rgb(1.0,0.0,0.0);
-		cr -> move_to (time * width , 0);
-		cr -> line_to (time * width , height);
+		cr -> move_to ( playheadPosition, 0);
+		cr -> line_to ( playheadPosition , height);
 		cr -> stroke();
 		
 		// draw playhead "spot-value"
@@ -385,7 +385,7 @@ bool AutomationWidget::on_expose_event(GdkEventExpose* event)
 		*/
 		
 		cr -> set_source_rgb (1.0,1.0,0.0);
-		cr -> arc( time*width , (1 - getValue())*height , 8.5 , 0 ,2 * 3.1415);
+		cr -> arc( playheadPosition , (1 - getValue())*height , 8.5 , 0 ,2 * 3.1415);
 		cr -> stroke();
 		
 	} 

@@ -110,7 +110,7 @@ bool AutomationTrack::setTime(jack_transport_state_t inTransport , jack_position
 	// current frame & beat bar tick. Finally send a float to update_time
 	if (transport & JackTransportRolling)
 	{
-		time = ((pos.beat-1) + (pos.tick / pos.ticks_per_beat)) / 4.0;
+		time = ((pos.beat) + (pos.tick / pos.ticks_per_beat)) / 4.0;
 		
 		// here we pass a float value 0 = begin, 1 = end
 		widget.update_time( time );
