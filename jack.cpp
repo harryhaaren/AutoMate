@@ -113,9 +113,11 @@ int Jack::process(jack_nframes_t nframes)
 				buffer = jack_midi_event_reserve(out_port_buf, 0, 3);
 				
 				// write CC change
-				buffer[0] = 144 + arrayPointer[i].getChannel();
+				buffer[0] = arrayPointer[i].getChannel();
 				buffer[1] = arrayPointer[i].getCC();
 				buffer[2] = arrayPointer[i].getValue() * 127;
+        
+        std::cout << (int)buffer[0] << "  " << (int)buffer[1] << "  " << (int)buffer[2] << std::endl; 
 			}
 		}
 	}

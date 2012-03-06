@@ -57,7 +57,7 @@ class AutomationTrack
 		
 		// Widgets
 		Gtk::VBox* leftBox;
-		Gtk::ComboBoxText channel;
+		Gtk::ComboBoxEntryText channel;
 		Gtk::ComboBoxEntryText cc;
 		Gtk::Entry* entry;
 		Gtk::ToggleButton* toggleButton;

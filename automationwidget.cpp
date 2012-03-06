@@ -160,7 +160,7 @@ void AutomationWidget::update_time(float inTime)
 	if ( time > 1) { time = 1; }
 	if ( time < 0) { time = 0; }
 	
-	std::cout << "update_time(): new time" << time << std::endl;
+	//std::cout << "update_time(): new time" << time << std::endl;
 	
 	// playheadPosition is the num of pixels across
 	playheadPosition = time*width;
